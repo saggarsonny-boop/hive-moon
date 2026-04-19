@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const DEMO_KEY = "hivemoon_demo_seen";
 
@@ -11,9 +11,11 @@ export default function AutoDemo({ onDone }: { onDone: () => void }) {
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState(0);
   const [bars, setBars] = useState<number[]>([]);
+  const hasRun = useRef(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || hasRun.current) return;
+    hasRun.current = true;
     if (localStorage.getItem(DEMO_KEY)) { onDone(); return; }
     setVisible(true);
 
