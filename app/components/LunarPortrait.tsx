@@ -18,7 +18,7 @@ export default function LunarPortrait({ portrait, totalDays }: { portrait: Portr
         <p style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(74,127,165,0.55)", fontFamily: "monospace" }}>
           {t.yourLunarPortrait}
         </p>
-        <div style={{ background: "rgba(4,8,20,0.7)", border: "1px solid rgba(74,127,165,0.14)", borderRadius: 18, padding: "24px 22px", space: "12px" }} className="space-y-4">
+        <div style={{ background: "rgba(4,8,20,0.7)", border: "1px solid rgba(74,127,165,0.14)", borderRadius: 18, padding: "24px 22px" }} className="space-y-4">
           <p style={{ fontSize: 14, color: "rgba(180,200,225,0.55)", lineHeight: 1.7 }}>
             {t.portraitUnlocksAfter}
           </p>
