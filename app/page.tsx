@@ -37,13 +37,13 @@ export default function HiveMoon() {
     loadData();
   }, [loadData]);
 
-  function handleDemoFinished() {
+  const handleDemoFinished = useCallback(() => {
     setDemoVisible(false);
     if (!localStorage.getItem(WELCOME_KEY)) {
       setShowWelcome(true);
     }
     setReady(true);
-  }
+  }, []);
 
   function dismissWelcome() {
     localStorage.setItem(WELCOME_KEY, "1");
