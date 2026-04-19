@@ -8,6 +8,7 @@ import LunarPortraitCard from "@/app/components/LunarPortrait";
 import UpcomingEventsCard from "@/app/components/UpcomingEvents";
 import AutoDemo from "@/app/components/AutoDemo";
 import LanguageSelector from "@/app/components/LanguageSelector";
+import TooltipTour from "@/app/components/TooltipTour";
 import { useTranslation } from "@/hooks/useTranslation";
 
 const WELCOME_KEY = "hivemoon_welcomed";
@@ -104,6 +105,12 @@ export default function HiveMoon() {
   return (
     <main dir={lang === 'ar' ? 'rtl' : 'ltr'} style={{ minHeight: "100vh", color: "#e8f4ff" }}>
       <LanguageSelector />
+      <TooltipTour engineId="hivemoon" tips={[
+        { label: "Moon dial", text: "Shows tonight's exact phase, illumination percentage, and distance from Earth — calculated astronomically, no API." },
+        { label: "Daily logger", text: "Tap 1–5 for mood and energy. Takes two seconds. The pattern emerges after 14 days." },
+        { label: "Upcoming events", text: "Next full moon, new moon, and any supermoons — with exact countdowns." },
+        { label: "Lunar portrait", text: "After 14 days of logging, your personal pattern appears — which phase correlates with your highest mood and energy." },
+      ]} />
       {demoVisible && <AutoDemo onDone={handleDemoFinished} />}
 
       {showWelcome && (
