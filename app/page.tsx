@@ -11,7 +11,7 @@ import AutoDemo from "@/app/components/AutoDemo";
 const WELCOME_KEY = "hivemoon_welcomed";
 
 export default function HiveMoon() {
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(true);
   const [demoVisible, setDemoVisible] = useState(true);
   const [moonInfo, setMoonInfo] = useState<PhaseInfo | null>(null);
   const [events, setEvents] = useState<UpcomingEvent[]>([]);
