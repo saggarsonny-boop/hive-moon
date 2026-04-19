@@ -35,7 +35,7 @@ function HiveFooter() {
   return (
     <footer style={{ borderTop: "1px solid rgba(13,31,53,0.7)", padding: "24px 24px 32px", textAlign: "center" }}>
       <p style={{ fontSize: "11px", color: "rgba(26,58,92,0.5)", marginBottom: "14px", letterSpacing: "0.06em" }}>
-        A social experiment · Free forever · No ads · No investors
+        A social experiment · No ads · No investors · No agenda
       </p>
       <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap", marginBottom: "6px" }}>
         <a href="https://hive.baby"            style={NAV_STYLE}>hive.baby</a>
