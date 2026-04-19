@@ -3,32 +3,20 @@
 import { PhaseInfo } from "@/lib/moon";
 
 export default function MoonDial({ info }: { info: PhaseInfo }) {
-  const illumination = info.illumination;
-  const phase = info.phase;
+  const { illumination, phase, phaseName, emoji, isSupermoon, isMicroMoon, age, distance } = info;
 
-  // SVG moon drawing: circle with illuminated portion
-  const size = 160;
-  const r = 68;
+  const size = 220;
+  const r = 94;
   const cx = size / 2;
   const cy = size / 2;
 
-  // Determine which side is illuminated and dark
-  // phase 0=new, 0.5=full
-  // 0–0.5: waxing (right side lit), 0.5–1: waning (left side lit)
   const isWaxing = phase <= 0.5;
-  const limb = isWaxing ? 1 : -1; // 1 = right bright, -1 = left bright
-
-  // Ellipse x-radius for terminator (varies from r to -r)
-  // at new moon (phase=0): ellipseX = r (full dark face terminator on right)
-  // at full moon (phase=0.5): ellipseX = -r (full light face)
+  const limb = isWaxing ? 1 : -1;
   const ellipseX = isWaxing
-    ? r - 2 * r * (phase / 0.5)          // r→-r as phase 0→0.5
-    : -r + 2 * r * ((phase - 0.5) / 0.5); // -r→r as phase 0.5→1
+    ? r - 2 * r * (phase / 0.5)
+    : -r + 2 * r * ((phase - 0.5) / 0.5);
 
-  // Build SVG path for the lit crescent/gibbous
-  // Outer arc: the bright limb (always a semicircle)
-  // Inner arc: the terminator (ellipse, possibly reversed)
-  const sweep = limb === 1 ? 1 : 0;
+  const sweep     = limb === 1 ? 1 : 0;
   const termSweep = ellipseX > 0 ? 0 : 1;
 
   const moonPath = `
@@ -38,40 +26,77 @@ export default function MoonDial({ info }: { info: PhaseInfo }) {
     Z
   `;
 
-  const glowOpacity = 0.06 + illumination * 0.10;
+  const glowA  = 0.08 + illumination * 0.16;
+  const glowA2 = 0.03 + illumination * 0.07;
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="relative">
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-          {/* Outer glow */}
-          <circle cx={cx} cy={cy} r={r + 18} fill="rgba(200,210,240,0.03)" />
-          <circle cx={cx} cy={cy} r={r + 10} fill={`rgba(200,210,240,${glowOpacity})`} />
-          {/* Dark side */}
-          <circle cx={cx} cy={cy} r={r} fill="#1a1a2e" />
-          {/* Lit side */}
+    <div className="flex flex-col items-center gap-5">
+      <div className="relative moon-breathe">
+        <svg
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+          style={{ overflow: "visible" }}
+        >
+          {/* Wide outer halo */}
+          <circle cx={cx} cy={cy} r={r + 36} fill={`rgba(160,185,230,${glowA2})`} />
+          {/* Inner glow ring */}
+          <circle cx={cx} cy={cy} r={r + 18} fill={`rgba(180,200,240,${glowA})`} />
+          {/* Moon body — dark side */}
+          <circle cx={cx} cy={cy} r={r} fill="#0e1020" />
+          {/* Subtle limb darkening on dark side */}
+          <circle cx={cx} cy={cy} r={r} fill="none"
+            stroke="rgba(100,120,160,0.08)" strokeWidth={r * 0.6}
+            style={{ filter: "blur(8px)" }} />
+          {/* Lit portion */}
           {illumination > 0.01 && (
-            <path d={moonPath} fill="#d4cdb8" />
+            <path d={moonPath} fill="#cec8be" />
           )}
-          {/* Subtle surface texture rings */}
-          <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
-          <circle cx={cx - 12} cy={cy - 18} r={8} fill="rgba(0,0,0,0.08)" />
-          <circle cx={cx + 20} cy={cy + 10} r={12} fill="rgba(0,0,0,0.06)" />
-          <circle cx={cx - 5} cy={cy + 24} r={6} fill="rgba(0,0,0,0.07)" />
+          {/* Surface craters — only on lit side */}
+          {illumination > 0.15 && (
+            <>
+              <circle cx={cx - 14} cy={cy - 22} r={9}  fill="rgba(0,0,0,0.09)" />
+              <circle cx={cx + 24} cy={cy + 12} r={13} fill="rgba(0,0,0,0.07)" />
+              <circle cx={cx - 6}  cy={cy + 28} r={7}  fill="rgba(0,0,0,0.08)" />
+              <circle cx={cx + 10} cy={cy - 38} r={5}  fill="rgba(0,0,0,0.06)" />
+              <circle cx={cx - 30} cy={cy + 8}  r={6}  fill="rgba(0,0,0,0.05)" />
+            </>
+          )}
+          {/* Limb edge */}
+          <circle cx={cx} cy={cy} r={r} fill="none"
+            stroke="rgba(200,210,240,0.06)" strokeWidth="1.5" />
+          {/* Terminator soft highlight */}
+          {illumination > 0.01 && illumination < 0.99 && (
+            <ellipse
+              cx={cx + ellipseX * 0.05}
+              cy={cy}
+              rx={Math.max(1, Math.abs(ellipseX) * 0.08)}
+              ry={r}
+              fill="rgba(220,230,255,0.06)"
+            />
+          )}
         </svg>
       </div>
 
-      <div className="text-center space-y-1">
-        <div className="text-2xl">{info.emoji}</div>
-        <div className="text-white font-semibold tracking-tight">{info.phaseName}</div>
-        {info.isSupermoon && (
-          <div className="text-xs text-amber-400 font-medium tracking-widest uppercase">Supermoon</div>
+      <div className="text-center space-y-1.5">
+        <div className="text-3xl leading-none">{emoji}</div>
+        <div className="text-white font-semibold tracking-tight text-lg">{phaseName}</div>
+        {isSupermoon && (
+          <div className="text-xs font-semibold tracking-widest uppercase" style={{ color: "rgba(212,175,55,0.85)" }}>
+            Supermoon
+          </div>
         )}
-        {info.isMicroMoon && (
-          <div className="text-xs text-blue-400 font-medium tracking-widest uppercase">Micromoon</div>
+        {isMicroMoon && (
+          <div className="text-xs font-semibold tracking-widest uppercase" style={{ color: "rgba(100,150,220,0.8)" }}>
+            Micromoon
+          </div>
         )}
-        <div className="text-gray-500 text-xs">{Math.round(illumination * 100)}% illuminated · {info.age.toFixed(1)} days old</div>
-        <div className="text-gray-600 text-xs">{info.distance.toLocaleString()} km away</div>
+        <div style={{ fontSize: 12, color: "rgba(120,150,190,0.6)" }}>
+          {Math.round(illumination * 100)}% illuminated &middot; {age.toFixed(1)} days old
+        </div>
+        <div style={{ fontSize: 11, color: "rgba(74,100,140,0.45)" }}>
+          {distance.toLocaleString()} km
+        </div>
       </div>
     </div>
   );

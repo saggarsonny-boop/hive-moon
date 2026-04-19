@@ -3,19 +3,89 @@
 :root {
   --background: #05060e;
   --foreground: #e8eaf0;
+  --moon-silver: #d4cfc8;
+  --moon-glow: rgba(180,200,240,0.12);
+  --glass-bg: rgba(6,10,22,0.82);
+  --glass-border: rgba(74,127,165,0.18);
+  --gold: #c8960a;
+  --gold-dim: rgba(200,150,10,0.45);
 }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(10,18,50,0.7) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 90%, rgba(5,10,30,0.5) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 40%, rgba(4,8,24,0.4) 0%, transparent 70%);
 }
 
+/* Star field */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.55) 0%, transparent 100%),
+    radial-gradient(1px 1px at 34% 7%,  rgba(255,255,255,0.40) 0%, transparent 100%),
+    radial-gradient(1px 1px at 58% 22%, rgba(255,255,255,0.50) 0%, transparent 100%),
+    radial-gradient(1px 1px at 76% 5%,  rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 91% 31%, rgba(255,255,255,0.45) 0%, transparent 100%),
+    radial-gradient(1px 1px at 8%  44%, rgba(255,255,255,0.30) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 55%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 67% 68%, rgba(255,255,255,0.40) 0%, transparent 100%),
+    radial-gradient(1px 1px at 23% 82%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 77%, rgba(255,255,255,0.30) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 50% 12%, rgba(200,210,255,0.6) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 5%  92%, rgba(200,210,255,0.5) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 95% 55%, rgba(200,210,255,0.55) 0%, transparent 100%),
+    radial-gradient(1px 1px at 38% 38%, rgba(255,255,255,0.20) 0%, transparent 100%),
+    radial-gradient(1px 1px at 72% 48%, rgba(255,255,255,0.22) 0%, transparent 100%);
+}
+
+/* Page content sits above star field */
+main, header, footer { position: relative; z-index: 1; }
+
+/* Glass card */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Section label */
+.section-label {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(74,127,165,0.55);
+  font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+}
+
+/* Moon glow animation */
+@keyframes moon-breathe {
+  0%, 100% { filter: drop-shadow(0 0 18px rgba(180,200,240,0.18)) drop-shadow(0 0 40px rgba(140,160,220,0.08)); }
+  50%       { filter: drop-shadow(0 0 28px rgba(180,200,240,0.30)) drop-shadow(0 0 60px rgba(140,160,220,0.14)); }
+}
+.moon-breathe { animation: moon-breathe 4s ease-in-out infinite; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up 0.5s ease-out both; }
+
 @keyframes hive-planet-spin {
-  from { transform: rotate(0deg) }
-  to { transform: rotate(360deg) }
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
-.hive-planet {
-  animation: hive-planet-spin 12s linear infinite;
-  display: inline-block;
-}
+.hive-planet { animation: hive-planet-spin 12s linear infinite; display: inline-block; }

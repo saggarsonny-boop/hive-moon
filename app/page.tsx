@@ -88,86 +88,97 @@ export default function HiveMoon() {
     return () => clearInterval(t);
   }, []);
 
+  const CARD: React.CSSProperties = {
+    background: "rgba(4,8,20,0.78)",
+    border: "1px solid rgba(74,127,165,0.16)",
+    borderRadius: 20,
+    backdropFilter: "blur(16px)",
+    WebkitBackdropFilter: "blur(16px)",
+    padding: "24px 22px",
+  };
+
   return (
-    <main className="min-h-screen bg-[#05060e] text-white">
+    <main style={{ minHeight: "100vh", color: "#e8f4ff" }}>
       {demoVisible && <AutoDemo onDone={handleDemoFinished} />}
 
       {showWelcome && (
-        <div className="fixed inset-0 z-40 flex items-end justify-center pb-10 px-6 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-sm bg-gray-950 border border-gray-800 rounded-2xl p-6 space-y-4">
-            <div className="text-center space-y-1">
-              <div className="text-3xl">🌙</div>
-              <div className="text-white font-semibold">Does the moon affect you?</div>
-              <div className="text-gray-400 text-sm">Log mood and energy each day. Find out.</div>
+        <div className="fixed inset-0 z-40 flex items-end justify-center pb-10 px-6"
+          style={{ background: "rgba(2,4,10,0.75)", backdropFilter: "blur(10px)" }}>
+          <div style={{ ...CARD, width: "100%", maxWidth: 380 }} className="space-y-5">
+            <div className="text-center space-y-2">
+              <div style={{ fontSize: 36 }}>🌙</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#e8f4ff", letterSpacing: "-0.02em" }}>
+                Does the moon affect you?
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(120,150,190,0.65)", lineHeight: 1.6 }}>
+                Log mood and energy each day. Find out.
+              </div>
             </div>
-            <div className="bg-gray-900 rounded-xl p-3 text-center">
-              <div className="text-gray-500 text-xs">Try: tap 1–5 for mood, 1–5 for energy. Done.</div>
+            <div style={{ background: "rgba(4,8,22,0.6)", border: "1px solid rgba(74,127,165,0.1)", borderRadius: 12, padding: "12px 16px", textAlign: "center" }}>
+              <div style={{ fontSize: 11, color: "rgba(74,100,140,0.6)" }}>
+                Tap 1–5 for mood · 1–5 for energy · done in 2 seconds
+              </div>
             </div>
             <button
               onClick={dismissWelcome}
-              className="w-full bg-white text-gray-950 font-semibold py-3 rounded-xl text-sm cursor-pointer hover:bg-gray-100 transition-colors"
+              style={{ width: "100%", padding: 14, background: "rgba(8,16,36,0.9)", border: "1px solid rgba(180,200,240,0.25)", borderRadius: 14, color: "rgba(200,220,255,0.9)", fontSize: 14, fontWeight: 600, fontFamily: "inherit", cursor: "pointer" }}
             >
-              Start logging
+              Start logging →
             </button>
           </div>
         </div>
       )}
 
       {!moonInfo ? (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center space-y-2">
-            <div className="text-4xl">🌙</div>
-            <div className="text-white text-lg">Loading moon data...</div>
+        <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ textAlign: "center" }} className="space-y-3">
+            <div style={{ fontSize: 48 }} className="moon-breathe">🌙</div>
+            <div style={{ fontSize: 13, color: "rgba(74,127,165,0.5)", letterSpacing: "0.1em" }}>
+              Reading the sky…
+            </div>
           </div>
         </div>
       ) : (
-        <div className="max-w-md mx-auto px-4 py-10 space-y-10">
+        <div style={{ maxWidth: 460, margin: "0 auto", padding: "48px 20px 80px" }} className="space-y-10 fade-up">
+
           {/* Header */}
-          <div className="text-center space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">HiveMoon</h1>
-            <p className="text-gray-600 text-xs">Does the moon affect you? Find out.</p>
+          <div style={{ textAlign: "center" }} className="space-y-1">
+            <h1 style={{ fontSize: 26, fontWeight: 700, letterSpacing: "-0.03em", color: "#e8f4ff" }}>
+              HiveMoon
+            </h1>
+            <p style={{ fontSize: 12, color: "rgba(74,100,140,0.55)", letterSpacing: "0.06em" }}>
+              Does the moon affect you?
+            </p>
           </div>
 
-          {/* Moon visual */}
-          <div className="flex justify-center">
+          {/* Moon dial */}
+          <div style={{ display: "flex", justifyContent: "center", padding: "8px 0" }}>
             <MoonDial info={moonInfo} />
           </div>
 
-          {/* Today's date & phase context */}
-          <div className="text-center text-gray-500 text-xs">
+          {/* Date */}
+          <div style={{ textAlign: "center", fontSize: 12, color: "rgba(74,100,140,0.45)", letterSpacing: "0.04em" }}>
             {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </div>
 
-          {/* Daily logger */}
-          <div className="bg-gray-950 border border-gray-900 rounded-2xl p-5">
-            <DailyLogger
-              moonInfo={moonInfo}
-              existingLog={todayLog}
-              onSaved={handleLogSaved}
-            />
+          {/* Logger card */}
+          <div style={CARD}>
+            <DailyLogger moonInfo={moonInfo} existingLog={todayLog} onSaved={handleLogSaved} />
           </div>
 
-          {/* Streak / stats */}
+          {/* Streak stats */}
           {logs.length > 0 && (
-            <div className="flex justify-around text-center">
-              <div>
-                <div className="text-white font-bold text-xl">{logs.length}</div>
-                <div className="text-gray-600 text-xs mt-0.5">days logged</div>
-              </div>
-              <div>
-                <div className="text-white font-bold text-xl">
-                  {Math.round((logs.length / 90) * 100)}%
+            <div style={{ display: "flex", justifyContent: "space-around", textAlign: "center" }}>
+              {[
+                { val: logs.length,                                     label: "days logged" },
+                { val: `${Math.round((logs.length / 90) * 100)}%`,     label: "to 90 days" },
+                { val: logs.length >= 14 ? "✓" : 14 - logs.length,    label: logs.length >= 14 ? "portrait ready" : "days to portrait" },
+              ].map(({ val, label }) => (
+                <div key={label}>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: "#e8f4ff", letterSpacing: "-0.02em" }}>{val}</div>
+                  <div style={{ fontSize: 11, color: "rgba(74,100,140,0.5)", marginTop: 2 }}>{label}</div>
                 </div>
-                <div className="text-gray-600 text-xs mt-0.5">to 90 days</div>
-              </div>
-              <div>
-                <div className="text-white font-bold text-xl">
-                  {logs.length >= 14 ? "✓" : Math.max(0, 14 - logs.length)}
-                </div>
-                <div className="text-gray-600 text-xs mt-0.5">
-                  {logs.length >= 14 ? "portrait ready" : "days to portrait"}
-                </div>
-              </div>
+              ))}
             </div>
           )}
 
@@ -177,37 +188,28 @@ export default function HiveMoon() {
           {/* Upcoming events */}
           {events.length > 0 && <UpcomingEventsCard events={events} />}
 
-          {/* Log history strip */}
+          {/* Log history */}
           {logs.length > 0 && (
             <div className="space-y-3">
-              <p className="text-xs text-gray-600 uppercase tracking-widest">Recent logs</p>
-              <div className="space-y-1.5">
+              <p style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(74,127,165,0.55)", fontFamily: "monospace" }}>
+                Recent logs
+              </p>
+              <div className="space-y-1">
                 {[...logs].reverse().slice(0, 14).map((l) => (
-                  <div key={l.date} className="flex items-center gap-3 text-xs text-gray-500">
-                    <span className="w-24 text-gray-700">
+                  <div key={l.date} style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 12, padding: "5px 0", borderBottom: "1px solid rgba(6,12,28,0.8)" }}>
+                    <span style={{ width: 80, color: "rgba(74,100,140,0.4)", flexShrink: 0 }}>
                       {new Date(l.date + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
                     </span>
-                    <span>{l.phaseName}</span>
-                    <span className="ml-auto">M:{l.mood} E:{l.energy}</span>
+                    <span style={{ flex: 1, color: "rgba(120,150,190,0.55)" }}>{l.phaseName}</span>
+                    <span style={{ color: "rgba(74,100,140,0.5)", fontFamily: "monospace", fontSize: 11 }}>
+                      M:{l.mood} E:{l.energy}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Privacy note */}
-          <div className="text-center text-gray-700 text-xs leading-relaxed pb-4">
-            All data stays on your device. No account. No server. No tracking.
-            <br />
-            Your lunar portrait is yours alone.
-          </div>
-        </div>
-      )}
-
-      {/* Loading state before demo finishes */}
-      {!ready && !demoVisible && (
-        <div className="flex items-center justify-center min-h-screen text-gray-700 text-sm">
-          Loading...
         </div>
       )}
     </main>
