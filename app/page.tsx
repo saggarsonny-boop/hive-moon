@@ -9,10 +9,14 @@ import UpcomingEventsCard from "@/app/components/UpcomingEvents";
 import AutoDemo from "@/app/components/AutoDemo";
 
 const WELCOME_KEY = "hivemoon_welcomed";
+const DEMO_KEY = "hivemoon_demo_seen";
 
 export default function HiveMoon() {
   const [ready, setReady] = useState(true);
-  const [demoVisible, setDemoVisible] = useState(true);
+  const [demoVisible, setDemoVisible] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !localStorage.getItem(DEMO_KEY);
+  });
   const [moonInfo, setMoonInfo] = useState<PhaseInfo | null>(null);
   const [events, setEvents] = useState<UpcomingEvent[]>([]);
   const [logs, setLogs] = useState<DayLog[]>([]);
@@ -38,6 +42,7 @@ export default function HiveMoon() {
   }, [loadData]);
 
   const handleDemoFinished = useCallback(() => {
+    localStorage.setItem(DEMO_KEY, "1");
     setDemoVisible(false);
     if (!localStorage.getItem(WELCOME_KEY)) {
       setShowWelcome(true);
