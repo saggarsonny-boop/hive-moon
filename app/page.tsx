@@ -113,7 +113,14 @@ export default function HiveMoon() {
         </div>
       )}
 
-      {ready && moonInfo && (
+      {!moonInfo ? (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center space-y-2">
+            <div className="text-4xl">🌙</div>
+            <div className="text-white text-lg">Loading moon data...</div>
+          </div>
+        </div>
+      ) : (
         <div className="max-w-md mx-auto px-4 py-10 space-y-10">
           {/* Header */}
           <div className="text-center space-y-1">
