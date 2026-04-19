@@ -1,6 +1,7 @@
 "use client";
 
 import { LunarPortrait as Portrait, PHASE_EMOJIS } from "@/lib/moon";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const PHASE_ORDER = [
   "New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous",
@@ -8,23 +9,23 @@ const PHASE_ORDER = [
 ];
 
 export default function LunarPortrait({ portrait, totalDays }: { portrait: Portrait | null; totalDays: number }) {
+  const { t, phase: translatePhase } = useTranslation();
   if (!portrait) {
     const needed = Math.max(0, 14 - totalDays);
     const pct    = Math.min(100, Math.round((totalDays / 14) * 100));
     return (
       <div className="space-y-4 fade-up">
         <p style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(74,127,165,0.55)", fontFamily: "monospace" }}>
-          Your lunar portrait
+          {t.yourLunarPortrait}
         </p>
         <div style={{ background: "rgba(4,8,20,0.7)", border: "1px solid rgba(74,127,165,0.14)", borderRadius: 18, padding: "24px 22px", space: "12px" }} className="space-y-4">
           <p style={{ fontSize: 14, color: "rgba(180,200,225,0.55)", lineHeight: 1.7 }}>
-            Your portrait unlocks after{" "}
-            <span style={{ color: "#e8f4ff", fontWeight: 600 }}>14 days</span> of logging.
+            {t.portraitUnlocksAfter}
           </p>
           <p style={{ fontSize: 12, color: "rgba(74,100,140,0.5)" }}>
             {totalDays === 0
               ? "Log today to begin."
-              : `${totalDays} day${totalDays > 1 ? "s" : ""} logged — ${needed} more to go.`}
+              : `${totalDays} ${t.daysLogged} — ${needed} more to go.`}
           </p>
           <div style={{ width: "100%", background: "rgba(10,16,32,0.8)", borderRadius: 100, height: 3, overflow: "hidden" }}>
             <div
@@ -46,7 +47,7 @@ export default function LunarPortrait({ portrait, totalDays }: { portrait: Portr
   return (
     <div className="space-y-4 fade-up">
       <p style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(74,127,165,0.55)", fontFamily: "monospace" }}>
-        Your lunar portrait
+        {t.yourLunarPortrait}
       </p>
 
       <div style={{ background: "rgba(4,8,20,0.8)", border: "1px solid rgba(74,127,165,0.18)", borderRadius: 20, padding: "24px 22px" }} className="space-y-5">
@@ -61,9 +62,9 @@ export default function LunarPortrait({ portrait, totalDays }: { portrait: Portr
 
         <div style={{ display: "flex", gap: 20 }}>
           {[
-            { label: "Peak phase", value: `${PHASE_EMOJIS[portrait.peakPhase]} ${portrait.peakPhase}` },
-            { label: "Avg mood",   value: `${portrait.avgMood}/5` },
-            { label: "Cycles",     value: String(portrait.cyclesLogged || "<1") },
+            { label: t.peakPhase, value: `${PHASE_EMOJIS[portrait.peakPhase]} ${translatePhase(portrait.peakPhase)}` },
+            { label: t.avgMood,   value: `${portrait.avgMood}/5` },
+            { label: t.cycles,     value: String(portrait.cyclesLogged || "<1") },
           ].map(({ label, value }) => (
             <div key={label}>
               <div style={{ fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(74,100,140,0.5)", fontFamily: "monospace" }}>
@@ -90,7 +91,7 @@ export default function LunarPortrait({ portrait, totalDays }: { portrait: Portr
                   color: isPeak ? "#e8f4ff" : "rgba(74,100,140,0.5)",
                   fontWeight: isPeak ? 600 : 400,
                 }}>
-                  {phase.replace(" Moon", "").replace(" Quarter", " Q")}
+                  {translatePhase(phase)}
                 </span>
                 <div style={{ flex: 1, background: "rgba(10,16,32,0.8)", borderRadius: 100, height: 3, overflow: "hidden" }}>
                   <div style={{
@@ -128,7 +129,7 @@ export default function LunarPortrait({ portrait, totalDays }: { portrait: Portr
             transition: "border-color 0.2s, color 0.2s",
           }}
         >
-          Share portrait
+          {t.sharePortrait}
         </button>
       </div>
     </div>

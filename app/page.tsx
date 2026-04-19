@@ -8,6 +8,7 @@ import LunarPortraitCard from "@/app/components/LunarPortrait";
 import UpcomingEventsCard from "@/app/components/UpcomingEvents";
 import AutoDemo from "@/app/components/AutoDemo";
 import LanguageSelector from "@/app/components/LanguageSelector";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const WELCOME_KEY = "hivemoon_welcomed";
 const DEMO_KEY = "hivemoon_demo_seen";
@@ -89,6 +90,8 @@ export default function HiveMoon() {
     return () => clearInterval(t);
   }, []);
 
+  const { t, fmt, phase, lang } = useTranslation();
+
   const CARD: React.CSSProperties = {
     background: "rgba(4,8,20,0.78)",
     border: "1px solid rgba(74,127,165,0.16)",
@@ -99,7 +102,7 @@ export default function HiveMoon() {
   };
 
   return (
-    <main style={{ minHeight: "100vh", color: "#e8f4ff" }}>
+    <main dir={lang === 'ar' ? 'rtl' : 'ltr'} style={{ minHeight: "100vh", color: "#e8f4ff" }}>
       <LanguageSelector />
       {demoVisible && <AutoDemo onDone={handleDemoFinished} />}
 
@@ -110,22 +113,22 @@ export default function HiveMoon() {
             <div className="text-center space-y-2">
               <div style={{ fontSize: 36 }}>🌙</div>
               <div style={{ fontSize: 16, fontWeight: 700, color: "#e8f4ff", letterSpacing: "-0.02em" }}>
-                Does the moon affect you?
+                {t.welcomeQuestion}
               </div>
               <div style={{ fontSize: 13, color: "rgba(120,150,190,0.65)", lineHeight: 1.6 }}>
-                Log mood and energy each day. Find out.
+                {t.welcomeBody}
               </div>
             </div>
             <div style={{ background: "rgba(4,8,22,0.6)", border: "1px solid rgba(74,127,165,0.1)", borderRadius: 12, padding: "12px 16px", textAlign: "center" }}>
               <div style={{ fontSize: 11, color: "rgba(74,100,140,0.6)" }}>
-                Tap 1–5 for mood · 1–5 for energy · done in 2 seconds
+                {t.welcomeHint}
               </div>
             </div>
             <button
               onClick={dismissWelcome}
               style={{ width: "100%", padding: 14, background: "rgba(8,16,36,0.9)", border: "1px solid rgba(180,200,240,0.25)", borderRadius: 14, color: "rgba(200,220,255,0.9)", fontSize: 14, fontWeight: 600, fontFamily: "inherit", cursor: "pointer" }}
             >
-              Start logging →
+              {t.startLogging}
             </button>
           </div>
         </div>
@@ -136,7 +139,7 @@ export default function HiveMoon() {
           <div style={{ textAlign: "center" }} className="space-y-3">
             <div style={{ fontSize: 48 }} className="moon-breathe">🌙</div>
             <div style={{ fontSize: 13, color: "rgba(74,127,165,0.5)", letterSpacing: "0.1em" }}>
-              Reading the sky…
+              {t.readingTheSky}
             </div>
           </div>
         </div>
@@ -146,10 +149,10 @@ export default function HiveMoon() {
           {/* Header */}
           <div style={{ textAlign: "center" }} className="space-y-1">
             <h1 style={{ fontSize: 26, fontWeight: 700, letterSpacing: "-0.03em", color: "#e8f4ff" }}>
-              HiveMoon
+              {t.title}
             </h1>
             <p style={{ fontSize: 12, color: "rgba(74,100,140,0.55)", letterSpacing: "0.06em" }}>
-              Does the moon affect you?
+              {t.subtitle}
             </p>
           </div>
 
@@ -172,9 +175,9 @@ export default function HiveMoon() {
           {logs.length > 0 && (
             <div style={{ display: "flex", justifyContent: "space-around", textAlign: "center" }}>
               {[
-                { val: logs.length,                                     label: "days logged" },
-                { val: `${Math.round((logs.length / 90) * 100)}%`,     label: "to 90 days" },
-                { val: logs.length >= 14 ? "✓" : 14 - logs.length,    label: logs.length >= 14 ? "portrait ready" : "days to portrait" },
+                { val: logs.length,                                     label: t.daysLogged },
+                { val: `${Math.round((logs.length / 90) * 100)}${t.percent}`,  label: t.to90Days },
+                { val: logs.length >= 14 ? "✓" : 14 - logs.length,    label: logs.length >= 14 ? t.portraitReady : t.daysToPortrait },
               ].map(({ val, label }) => (
                 <div key={label}>
                   <div style={{ fontSize: 22, fontWeight: 700, color: "#e8f4ff", letterSpacing: "-0.02em" }}>{val}</div>
@@ -194,7 +197,7 @@ export default function HiveMoon() {
           {logs.length > 0 && (
             <div className="space-y-3">
               <p style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(74,127,165,0.55)", fontFamily: "monospace" }}>
-                Recent logs
+                {t.recentLogs}
               </p>
               <div className="space-y-1">
                 {[...logs].reverse().slice(0, 14).map((l) => (
@@ -202,7 +205,7 @@ export default function HiveMoon() {
                     <span style={{ width: 80, color: "rgba(74,100,140,0.4)", flexShrink: 0 }}>
                       {new Date(l.date + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
                     </span>
-                    <span style={{ flex: 1, color: "rgba(120,150,190,0.55)" }}>{l.phaseName}</span>
+                    <span style={{ flex: 1, color: "rgba(120,150,190,0.55)" }}>{phase(l.phaseName)}</span>
                     <span style={{ color: "rgba(74,100,140,0.5)", fontFamily: "monospace", fontSize: 11 }}>
                       M:{l.mood} E:{l.energy}
                     </span>

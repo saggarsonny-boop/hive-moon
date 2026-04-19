@@ -1,9 +1,11 @@
 "use client";
 
 import { PhaseInfo } from "@/lib/moon";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function MoonDial({ info }: { info: PhaseInfo }) {
   const { illumination, phase, phaseName, emoji, isSupermoon, isMicroMoon, age, distance } = info;
+  const { t, phase: translatePhase } = useTranslation();
 
   const size = 220;
   const r = 94;
@@ -80,22 +82,22 @@ export default function MoonDial({ info }: { info: PhaseInfo }) {
 
       <div className="text-center space-y-1.5">
         <div className="text-3xl leading-none">{emoji}</div>
-        <div className="text-white font-semibold tracking-tight text-lg">{phaseName}</div>
+        <div className="text-white font-semibold tracking-tight text-lg">{translatePhase(phaseName)}</div>
         {isSupermoon && (
           <div className="text-xs font-semibold tracking-widest uppercase" style={{ color: "rgba(212,175,55,0.85)" }}>
-            Supermoon
+            {t.supermoon}
           </div>
         )}
         {isMicroMoon && (
           <div className="text-xs font-semibold tracking-widest uppercase" style={{ color: "rgba(100,150,220,0.8)" }}>
-            Micromoon
+            {t.micromoon}
           </div>
         )}
         <div style={{ fontSize: 12, color: "rgba(120,150,190,0.6)" }}>
-          {Math.round(illumination * 100)}% illuminated &middot; {age.toFixed(1)} days old
+          {Math.round(illumination * 100)}{t.percent} {t.illuminated} &middot; {age.toFixed(1)} {t.daysOld}
         </div>
         <div style={{ fontSize: 11, color: "rgba(74,100,140,0.45)" }}>
-          {distance.toLocaleString()} km
+          {distance.toLocaleString()} {t.km}
         </div>
       </div>
     </div>

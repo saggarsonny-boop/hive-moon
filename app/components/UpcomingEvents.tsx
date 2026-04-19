@@ -1,6 +1,7 @@
 "use client";
 
 import { UpcomingEvent } from "@/lib/moon";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const TYPE_STYLE: Record<string, { dot: string; color: string }> = {
   full:      { dot: "rgba(220,225,240,0.8)", color: "rgba(200,215,240,0.75)" },
@@ -11,6 +12,7 @@ const TYPE_STYLE: Record<string, { dot: string; color: string }> = {
 };
 
 export default function UpcomingEvents({ events }: { events: UpcomingEvent[] }) {
+  const { t, fmt, phase } = useTranslation();
   return (
     <div className="space-y-3 fade-up">
       <p style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(74,127,165,0.55)", fontFamily: "monospace" }}>
@@ -19,13 +21,14 @@ export default function UpcomingEvents({ events }: { events: UpcomingEvent[] }) 
       <div className="space-y-1.5">
         {events.map((e, i) => {
           const s = TYPE_STYLE[e.type] || TYPE_STYLE.full;
+          const translatedLabel = phase(e.label) !== e.label ? phase(e.label) : e.label;
           return (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 0", borderBottom: "1px solid rgba(10,20,40,0.6)" }}>
               <div style={{ width: 7, height: 7, borderRadius: "50%", flexShrink: 0, background: s.dot, boxShadow: `0 0 6px 1px ${s.dot}` }} />
-              <span style={{ flex: 1, fontSize: 13, color: s.color }}>{e.label}</span>
+              <span style={{ flex: 1, fontSize: 13, color: s.color }}>{translatedLabel}</span>
               <span style={{ fontSize: 11, color: "rgba(74,100,140,0.45)" }}>
                 {e.date.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
-                {e.daysAway === 1 ? " · tomorrow" : e.daysAway <= 7 ? ` · ${e.daysAway}d` : ""}
+                {e.daysAway === 0 ? ` · ${t.today}` : e.daysAway === 1 ? ` · ${t.tomorrow}` : e.daysAway <= 7 ? ` · ${fmt(t.in_n_days, { n: e.daysAway })}` : ""}
               </span>
             </div>
           );
