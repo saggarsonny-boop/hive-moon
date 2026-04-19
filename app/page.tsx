@@ -7,6 +7,7 @@ import DailyLogger from "@/app/components/DailyLogger";
 import LunarPortraitCard from "@/app/components/LunarPortrait";
 import UpcomingEventsCard from "@/app/components/UpcomingEvents";
 import AutoDemo from "@/app/components/AutoDemo";
+import LanguageSelector from "@/app/components/LanguageSelector";
 
 const WELCOME_KEY = "hivemoon_welcomed";
 const DEMO_KEY = "hivemoon_demo_seen";
@@ -99,6 +100,7 @@ export default function HiveMoon() {
 
   return (
     <main style={{ minHeight: "100vh", color: "#e8f4ff" }}>
+      <LanguageSelector />
       {demoVisible && <AutoDemo onDone={handleDemoFinished} />}
 
       {showWelcome && (
