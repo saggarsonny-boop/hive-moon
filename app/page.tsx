@@ -22,16 +22,34 @@ export default function HiveMoon() {
   const [showWelcome, setShowWelcome] = useState(false);
 
   const loadData = useCallback(() => {
-    const info = getMoonPhase();
-    const ev = getUpcomingEvents(new Date(), 6);
-    const allLogs = getLogs();
-    const today = allLogs.find((l) => l.date === getTodayKey()) || null;
-    const p = computePortrait(allLogs);
-    setMoonInfo(info);
-    setEvents(ev);
-    setLogs(allLogs);
-    setTodayLog(today);
-    setPortrait(p);
+    try {
+      const info = getMoonPhase();
+      const ev = getUpcomingEvents(new Date(), 6);
+      const allLogs = getLogs();
+      const today = allLogs.find((l) => l.date === getTodayKey()) || null;
+      const p = computePortrait(allLogs);
+      setMoonInfo(info);
+      setEvents(ev);
+      setLogs(allLogs);
+      setTodayLog(today);
+      setPortrait(p);
+    } catch (error) {
+      console.error("Error loading data:", error);
+      // Set some default values or handle error
+      setMoonInfo({
+        phase: 0.5,
+        illumination: 0.5,
+        phaseName: "Full Moon",
+        emoji: "🌕",
+        age: 14,
+        nextFullMoon: new Date(),
+        nextNewMoon: new Date(),
+        isSupermoon: false,
+        isMicroMoon: false,
+        distance: 385000,
+        eclipticLongitude: 0,
+      });
+    }
   }, []);
 
   useEffect(() => {
