@@ -13,10 +13,7 @@ const DEMO_KEY = "hivemoon_demo_seen";
 
 export default function HiveMoon() {
   const [ready, setReady] = useState(true);
-  const [demoVisible, setDemoVisible] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return !localStorage.getItem(DEMO_KEY);
-  });
+  const [demoVisible, setDemoVisible] = useState(false);
   const [moonInfo, setMoonInfo] = useState<PhaseInfo | null>(null);
   const [events, setEvents] = useState<UpcomingEvent[]>([]);
   const [logs, setLogs] = useState<DayLog[]>([]);
@@ -40,6 +37,11 @@ export default function HiveMoon() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setDemoVisible(!localStorage.getItem(DEMO_KEY));
+  }, []);
 
   const handleDemoFinished = useCallback(() => {
     localStorage.setItem(DEMO_KEY, "1");
