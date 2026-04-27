@@ -24,9 +24,35 @@ export default function HiveMoon() {
   const [portrait, setPortrait] = useState<LunarPortrait | null>(null);
   const [showWelcome, setShowWelcome] = useState(false);
 
-  const loadData = useCallback(() => {
+  const loadData = useCallback(async () => {
     try {
-      const info = getMoonPhase();
+      // Local calculation always provides nextFullMoon, nextNewMoon, eclipticLongitude
+      const localInfo = getMoonPhase();
+      let info: PhaseInfo = localInfo;
+
+      // Farmsense API for authoritative phase, illumination, distance
+      try {
+        const res = await fetch('/api/moon');
+        if (res.ok) {
+          const apiData = await res.json();
+          if (!apiData.error) {
+            info = {
+              ...localInfo,
+              phase: apiData.phase,
+              illumination: apiData.illumination,
+              phaseName: apiData.phaseName,
+              emoji: apiData.emoji,
+              age: apiData.age,
+              distance: apiData.distance,
+              isSupermoon: apiData.isSupermoon,
+              isMicroMoon: apiData.isMicroMoon,
+            };
+          }
+        }
+      } catch {
+        // fall through — localInfo is already set
+      }
+
       const ev = getUpcomingEvents(new Date(), 6);
       const allLogs = getLogs();
       const today = allLogs.find((l) => l.date === getTodayKey()) || null;
@@ -38,7 +64,6 @@ export default function HiveMoon() {
       setPortrait(p);
     } catch (error) {
       console.error("Error loading data:", error);
-      // Set some default values or handle error
       setMoonInfo({
         phase: 0.5,
         illumination: 0.5,
