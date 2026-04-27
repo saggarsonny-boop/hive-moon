@@ -64,19 +64,7 @@ export default function HiveMoon() {
       setPortrait(p);
     } catch (error) {
       console.error("Error loading data:", error);
-      setMoonInfo({
-        phase: 0.5,
-        illumination: 0.5,
-        phaseName: "Full Moon",
-        emoji: "🌕",
-        age: 14,
-        nextFullMoon: new Date(),
-        nextNewMoon: new Date(),
-        isSupermoon: false,
-        isMicroMoon: false,
-        distance: 385000,
-        eclipticLongitude: 0,
-      });
+      setMoonInfo(getMoonPhase());
     }
   }, []);
 
@@ -110,11 +98,6 @@ export default function HiveMoon() {
     setPortrait(computePortrait(allLogs));
   }
 
-  // Live clock update for moon phase
-  useEffect(() => {
-    const t = setInterval(() => setMoonInfo(getMoonPhase()), 60000);
-    return () => clearInterval(t);
-  }, []);
 
   const { t, fmt, phase, lang } = useTranslation();
 
