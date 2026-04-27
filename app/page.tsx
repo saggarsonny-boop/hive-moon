@@ -26,17 +26,29 @@ export default function HiveMoon() {
 
   const loadData = useCallback(async () => {
     try {
-      // Local calculation always provides nextFullMoon, nextNewMoon, eclipticLongitude
+      // Local calculation — always available immediately
       const localInfo = getMoonPhase();
-      let info: PhaseInfo = localInfo;
+      setMoonInfo(localInfo); // show page right away, don't wait for API
 
-      // Farmsense API for authoritative phase, illumination, distance
+      const ev = getUpcomingEvents(new Date(), 6);
+      const allLogs = getLogs();
+      const today = allLogs.find((l) => l.date === getTodayKey()) || null;
+      const p = computePortrait(allLogs);
+      setEvents(ev);
+      setLogs(allLogs);
+      setTodayLog(today);
+      setPortrait(p);
+
+      // Farmsense API — 5-second timeout, updates info if successful
       try {
-        const res = await fetch('/api/moon');
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 5000);
+        const res = await fetch('/api/moon', { signal: controller.signal });
+        clearTimeout(tid);
         if (res.ok) {
           const apiData = await res.json();
           if (!apiData.error) {
-            info = {
+            setMoonInfo({
               ...localInfo,
               phase: apiData.phase,
               illumination: apiData.illumination,
@@ -46,22 +58,12 @@ export default function HiveMoon() {
               distance: apiData.distance,
               isSupermoon: apiData.isSupermoon,
               isMicroMoon: apiData.isMicroMoon,
-            };
+            });
           }
         }
       } catch {
-        // fall through — localInfo is already set
+        // API timed out or failed — local data already shown
       }
-
-      const ev = getUpcomingEvents(new Date(), 6);
-      const allLogs = getLogs();
-      const today = allLogs.find((l) => l.date === getTodayKey()) || null;
-      const p = computePortrait(allLogs);
-      setMoonInfo(info);
-      setEvents(ev);
-      setLogs(allLogs);
-      setTodayLog(today);
-      setPortrait(p);
     } catch (error) {
       console.error("Error loading data:", error);
       setMoonInfo(getMoonPhase());

@@ -80,9 +80,14 @@ export default function MoonDial({ info }: { info: PhaseInfo }) {
         </svg>
       </div>
 
-      <div className="text-center space-y-1.5">
+      <div className="text-center space-y-2">
         <div className="text-3xl leading-none">{emoji}</div>
-        <div className="text-white font-semibold tracking-tight text-lg">{translatePhase(phaseName)}</div>
+        <div style={{ fontSize: 24, fontWeight: 800, color: "#e8f4ff", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
+          {translatePhase(phaseName)}
+        </div>
+        <div style={{ fontSize: 20, fontWeight: 700, color: "rgba(212,175,55,0.95)", letterSpacing: "-0.01em" }}>
+          {Math.round(illumination * 100)}{t.percent} {t.illuminated}
+        </div>
         {isSupermoon && (
           <div className="text-xs font-semibold tracking-widest uppercase" style={{ color: "rgba(212,175,55,0.85)" }}>
             {t.supermoon}
@@ -93,11 +98,8 @@ export default function MoonDial({ info }: { info: PhaseInfo }) {
             {t.micromoon}
           </div>
         )}
-        <div style={{ fontSize: 12, color: "rgba(120,150,190,0.6)" }}>
-          {Math.round(illumination * 100)}{t.percent} {t.illuminated} &middot; {age.toFixed(1)} {t.daysOld}
-        </div>
         <div style={{ fontSize: 11, color: "rgba(74,100,140,0.45)" }}>
-          {distance.toLocaleString()} {t.km}
+          {age.toFixed(1)} {t.daysOld} &middot; {distance.toLocaleString()} {t.km}
         </div>
       </div>
     </div>
